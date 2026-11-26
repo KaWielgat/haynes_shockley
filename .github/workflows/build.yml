@@ -1,33 +1,21 @@
-name: Build report PDF
-
-on:
-  push:
-  workflow_dispatch:
-
+name: foo
+on: push
 jobs:
-  build:
+  bar:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install PyMPDATA numpy matplotlib pillow jupyter ipykernel
-
+      - uses: actions/checkout@v7
       - uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Render report to PDF
-        run: quarto render sprawozdanie.ipynb --to typst --execute
-
-      - name: Upload PDF and animation artifact
-        uses: actions/upload-artifact@v4
+      - run: pip install --break-system-packages ipykernel nbformat nbclient matplotlib pillow PyMPDATA open-atmos-jupyter-utils
+      - run: quarto render sprawozdanie-v2.ipynb --to typst --execute
+      - run: quarto render haynes_shockley_mu_coeff.ipynb --to typst --execute
+      - run: quarto render haynes_shockley_mu_coeff.ipynb --to html --execute --embed-resources
+      - uses: actions/upload-artifact@v7
         with:
-          name: sprawozdanie-haynes-shockley
+          name: sprawozdanie-i-animacja
           path: |
-            sprawozdanie.pdf
+            sprawozdanie-v2.pdf
             animacja.gif
+            haynes_shockley_mu_coeff.pdf
+            haynes_shockley_mu_coeff.html
